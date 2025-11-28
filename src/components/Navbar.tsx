@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,14 +10,12 @@ interface NavbarProps {
 
 const Navbar = ({ scrolled }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navLinks = [
-    { name: "Home", path: "/home" },
-    { name: "Movies", path: "/home" },
-    { name: "TV Shows", path: "/home" },
-    { name: "New & Popular", path: "/home" },
-    { name: "Recommendations", path: "/recommend" },
+    { name: "Discover Movies", path: "/home" },
   ];
 
   return (
@@ -31,7 +29,7 @@ const Navbar = ({ scrolled }: NavbarProps) => {
         {/* Logo */}
         <div className="flex items-center gap-8">
           <Link to="/home" className="text-2xl md:text-3xl font-bold text-[#E50914]">
-            StreamFlix
+            MovieMatch
           </Link>
 
           {/* Desktop Navigation */}
@@ -60,19 +58,59 @@ const Navbar = ({ scrolled }: NavbarProps) => {
           >
             <Search className="h-5 w-5" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hidden md:flex text-white hover:text-white/80"
-          >
-            <Bell className="h-5 w-5" />
-          </Button>
-          <div className="hidden md:block w-8 h-8 rounded overflow-hidden bg-gray-700">
-            <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=User"
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+          
+          {/* Profile Dropdown */}
+          <div className="hidden md:block relative">
+            <button
+              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+              className="flex items-center gap-2 focus:outline-none"
+            >
+              <div className="w-8 h-8 rounded overflow-hidden bg-gray-700">
+                <img
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=User"
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <ChevronDown className={cn("h-4 w-4 text-white transition-transform", profileDropdownOpen && "rotate-180")} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {profileDropdownOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setProfileDropdownOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a] border border-gray-800 rounded-md shadow-lg z-50 py-2">
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      navigate('/profiles');
+                    }}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 transition-colors"
+                  >
+                    Switch Profile
+                  </button>
+                  <button
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 transition-colors"
+                  >
+                    Account Settings
+                  </button>
+                  <div className="border-t border-gray-800 my-2" />
+                  <button
+                    onClick={() => {
+                      setProfileDropdownOpen(false);
+                      navigate('/login');
+                    }}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-gray-800 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
