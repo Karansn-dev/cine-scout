@@ -15,11 +15,8 @@ const Home = () => {
   }, []);
 
   const categories = [
-    "Trending Now",
-    "Top Rated Movies",
-    "Action & Adventure",
-    "Comedies",
-    "Documentaries",
+    "Trending This Week",
+    "Highly Rated Classics",
     "Recommended For You",
   ];
 

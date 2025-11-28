@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Play, Info } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const HeroBanner = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative h-[90vh] md:h-[80vh] overflow-hidden">
       {/* Background Image */}
@@ -37,17 +39,10 @@ const HeroBanner = () => {
 
           <div className="flex flex-wrap gap-4 pt-4">
             <Button 
-              className="bg-white text-black hover:bg-white/90 px-8 py-6 text-lg font-semibold rounded-md transition-all hover:scale-105 shadow-lg"
+              onClick={() => navigate('/recommend')}
+              className="bg-[#E50914] hover:bg-[#F40612] text-white px-8 py-6 text-lg font-semibold rounded-md transition-all hover:scale-105 shadow-lg"
             >
-              <Play className="mr-2 h-5 w-5 fill-black" />
-              Play
-            </Button>
-            <Button 
-              variant="outline"
-              className="bg-gray-600/60 hover:bg-gray-600/80 text-white border-0 px-8 py-6 text-lg font-semibold rounded-md backdrop-blur-sm transition-all hover:scale-105"
-            >
-              <Info className="mr-2 h-5 w-5" />
-              More Info
+              Get Recommendations
             </Button>
           </div>
         </div>
