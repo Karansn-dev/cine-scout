@@ -21,13 +21,13 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <Navbar scrolled={scrolled} />
       <HeroBanner />
       
       <div className="relative z-10 -mt-32 pb-20">
         {categories.map((category, index) => (
-          <MovieRow key={index} title={category} />
+          <MovieRow key={index} title={category} categoryIndex={index} />
         ))}
       </div>
     </div>

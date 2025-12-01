@@ -5,21 +5,25 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to profiles page (UI-only, no backend auth)
+    // Simulate authentication - set auth state
+    login();
+    // Navigate to profiles page
     navigate('/profiles');
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background image with overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
@@ -27,7 +31,7 @@ const Login = () => {
           backgroundImage: "url('https://images.unsplash.com/photo-1574267432644-f610f7a0c56f?w=1920&q=80')",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/80 to-background" />
 
       {/* Header */}
       <header className="relative z-10 px-8 py-6">
@@ -36,18 +40,21 @@ const Login = () => {
 
       {/* Login Form */}
       <div className="relative z-10 flex items-center justify-center px-4 pb-20">
-        <div className="w-full max-w-md bg-black/75 backdrop-blur-sm rounded-lg p-8 md:p-12 border border-gray-800">
-          <h2 className="text-3xl font-bold text-white mb-8">Sign In</h2>
+        <div className="w-full max-w-md bg-background/75 backdrop-blur-sm rounded-lg p-8 md:p-12 border border-border">
+          <h2 className="text-3xl font-bold text-foreground mb-8">Sign In</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Google Sign-In Button - UI Only, prepared for future Firebase integration */}
             <Button 
               type="button"
-              className="w-full bg-white hover:bg-gray-50 text-gray-800 py-6 text-base font-medium rounded-md border border-gray-300 transition-all"
-              onClick={() => {
+              className="w-full bg-white dark:bg-gray-50 hover:bg-gray-50 dark:hover:bg-gray-100 text-gray-800 dark:text-gray-900 py-6 text-base font-medium rounded-md border border-gray-300 dark:border-gray-400 transition-all"
+                onClick={() => {
                 // TODO: Integrate Firebase Google Authentication
                 // firebase.auth().signInWithPopup(googleProvider)
                 console.log('Google Sign-In clicked - Firebase integration pending');
+                // For now, simulate login
+                login();
+                navigate('/profiles');
               }}
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -62,28 +69,28 @@ const Login = () => {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-black/75 text-gray-400">or</span>
+                <span className="px-2 bg-background/75 text-muted-foreground">or</span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white text-sm">Email</Label>
+              <Label htmlFor="email" className="text-foreground text-sm">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="bg-gray-900/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-[#E50914] focus:ring-[#E50914]"
+                className="bg-background/50 border-border text-foreground placeholder:text-muted-foreground focus:border-[#E50914] focus:ring-[#E50914]"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white text-sm">Password</Label>
+              <Label htmlFor="password" className="text-foreground text-sm">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -106,12 +113,12 @@ const Login = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Checkbox id="remember" className="border-gray-600 data-[state=checked]:bg-[#E50914] data-[state=checked]:border-[#E50914]" />
-                <label htmlFor="remember" className="text-sm text-gray-300 cursor-pointer">
+                <Checkbox id="remember" className="border-border data-[state=checked]:bg-[#E50914] data-[state=checked]:border-[#E50914]" />
+                <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
                   Remember me
                 </label>
               </div>
-              <button type="button" className="text-sm text-gray-400 hover:underline">
+              <button type="button" className="text-sm text-muted-foreground hover:underline">
                 Forgot password?
               </button>
             </div>
@@ -125,7 +132,7 @@ const Login = () => {
           </form>
 
           <div className="mt-8 text-center space-y-4">
-            <p className="text-gray-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               New to MovieMatch?{" "}
               <button 
                 onClick={() => navigate('/')}

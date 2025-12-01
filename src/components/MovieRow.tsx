@@ -1,40 +1,50 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import MovieCard from "./MovieCard";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getTrendingMovies, getTopRatedMovies, getPopularMovies, MovieSearchResult } from "@/lib/tmdb";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MovieRowProps {
   title: string;
+  categoryIndex: number;
 }
 
-// Sample movie data
-const generateMovies = (category: string) => {
-  const movieTitles = [
-    "The Cosmic Odyssey",
-    "Midnight Chronicles",
-    "Desert Storm",
-    "Urban Legends",
-    "Crystal Dreams",
-    "Phoenix Rising",
-    "Neon Nights",
-    "Silent Echo",
-    "Steel Hearts",
-    "Paradise Lost",
-  ];
-
-  return movieTitles.map((title, index) => ({
-    title: `${title}`,
-    poster: `https://images.unsplash.com/photo-${1440000000000 + index * 1000000}?w=400&h=600&fit=crop&q=80`,
-    rating: 7.5 + Math.random() * 2,
-    year: 2020 + Math.floor(Math.random() * 5),
-  }));
-};
-
-const MovieRow = ({ title }: MovieRowProps) => {
+const MovieRow = ({ title, categoryIndex }: MovieRowProps) => {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [movies, setMovies] = useState<MovieSearchResult[]>([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
+      try {
+        let fetchedMovies: MovieSearchResult[] = [];
+        
+        // Map categories to TMDB endpoints
+        if (title === "Trending This Week") {
+          fetchedMovies = await getTrendingMovies();
+        } else if (title === "Highly Rated Classics") {
+          fetchedMovies = await getTopRatedMovies();
+        } else if (title === "Recommended For You") {
+          fetchedMovies = await getPopularMovies();
+        }
+        
+        setMovies(fetchedMovies);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        // Fallback to empty array if API fails
+        setMovies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [title]);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -51,40 +61,40 @@ const MovieRow = ({ title }: MovieRowProps) => {
     }
   };
 
-  const movies = generateMovies(title);
-
   return (
     <div className="px-4 md:px-8 mb-8 group">
-      <h2 className="text-xl md:text-2xl font-semibold text-white mb-4">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-3 sm:mb-4">
         {title}
       </h2>
       
       <div className="relative">
         {/* Left Arrow */}
-        {showLeftArrow && (
+        {showLeftArrow && !loading && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => scroll("left")}
             className={cn(
-              "absolute left-0 top-1/2 -translate-y-1/2 z-10 h-full w-12 rounded-none bg-black/50 hover:bg-black/75 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              "absolute left-0 top-1/2 -translate-y-1/2 z-10 h-full w-8 sm:w-12 rounded-none bg-background/50 hover:bg-background/75 text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
             )}
+            aria-label="Scroll left"
           >
-            <ChevronLeft className="h-8 w-8" />
+            <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
           </Button>
         )}
 
         {/* Right Arrow */}
-        {showRightArrow && (
+        {showRightArrow && !loading && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => scroll("right")}
             className={cn(
-              "absolute right-0 top-1/2 -translate-y-1/2 z-10 h-full w-12 rounded-none bg-black/50 hover:bg-black/75 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              "absolute right-0 top-1/2 -translate-y-1/2 z-10 h-full w-8 sm:w-12 rounded-none bg-background/50 hover:bg-background/75 text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
             )}
+            aria-label="Scroll right"
           >
-            <ChevronRight className="h-8 w-8" />
+            <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
           </Button>
         )}
 
@@ -92,14 +102,28 @@ const MovieRow = ({ title }: MovieRowProps) => {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide scroll-smooth"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {movies.map((movie, index) => (
-            <div key={index} className="flex-shrink-0">
-              <MovieCard movie={movie} />
+          {loading ? (
+            // Loading skeletons
+            [...Array(10)].map((_, index) => (
+              <div key={index} className="flex-shrink-0 w-[120px] sm:w-[150px] md:w-[230px]">
+                <Skeleton className="aspect-[2/3] rounded-md mb-2" />
+                <Skeleton className="h-4 w-3/4 rounded" />
+              </div>
+            ))
+          ) : movies.length > 0 ? (
+            movies.map((movie, index) => (
+              <div key={movie.id || index} className="flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center w-full py-8 text-muted-foreground">
+              No movies available
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>
