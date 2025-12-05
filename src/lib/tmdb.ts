@@ -13,16 +13,18 @@ const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
 // Get API key from environment variables
 const getApiKey = (): string => {
+  console.log("Loaded key:", import.meta.env.VITE_TMDB_API_KEY); // 👈 ADD THIS HERE
+
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   if (!apiKey) {
     console.warn(
-      "TMDB API key not found. Please set VITE_TMDB_API_KEY in your .env file. " +
-      "Get your free API key at https://www.themoviedb.org/settings/api"
+      "TMDB API key not found. Please set VITE_TMDB_API_KEY in your .env file."
     );
     return "";
   }
   return apiKey;
 };
+
 
 export interface TMDBMovie {
   id: number;
