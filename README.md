@@ -2,7 +2,6 @@
 
 A modern, responsive movie recommendation web application built with React, TypeScript, and Tailwind CSS. Features AI-powered movie recommendations, dynamic movie posters from TMDB, theme toggle (light/dark mode), and authentication flow.
 
-> **🚀 Quick Start**: See [START_HERE.md](START_HERE.md) for step-by-step instructions to run the entire project!
 
 ## Features
 
@@ -36,7 +35,6 @@ A modern, responsive movie recommendation web application built with React, Type
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/a88bb0ad-89ff-462f-acf3-8c2d0c63da52
 
 ## Setup Instructions
 
